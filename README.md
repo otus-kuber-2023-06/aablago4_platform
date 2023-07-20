@@ -1,7 +1,7 @@
 # aablago4_platform
 aablago4 Platform repository
 
-Lecture 02 - Kubernetes intro.
+Homework#1 - Kubernetes intro.
 Base Tasks:
 1. Build custom docker image with customizations.
    aablago4/nginx_custom:1.0
@@ -20,7 +20,7 @@ Advanced Tasks:
     - push frontend-pod-healthy.yaml
     - success
 
-Lecture 03 - Kubernetes controllers
+Homework#2 - Kubernetes controllers
 1. Create kind cluster with 6 nodes (3 - master, 3 - worker)
 2. Create replicaset with custom frontend application container image from dockerhub.
 3. Create two versions of custom frontend application container image.
@@ -33,7 +33,7 @@ Lecture 03 - Kubernetes controllers
 10. *Make some successfull tests with port forwarding
 11. **Add tolerations sections to yaml file to create containers on worker and master nodes.
 
-Lecture 04 - Kubernetes Networks
+Homework#3 - Kubernetes Networks
 1. Start minikube
 2. Create web-pod with readinessprobe
 3. Add livenessProbe to web-pod
@@ -62,3 +62,27 @@ Lecture 04 - Kubernetes Networks
     3. Add canary notations to ingress rule. canary: true, weigth: 50
     4. seq 200 | xargs -Iz curl -s http://ingress.local/web/index.html | grep HOSTNAME
     5. 50% of requests routes to canary pods
+
+Homework#4 - Kubernetes Volumes
+1. Create kind cluster
+2. Create and apply minio-statefulset.yaml
+3. Create and apply minio-headless-service.yaml
+4. List resources
+5. Remove stateful set
+6. Create and apply stateful set manifest using secrets
+   1. Create and apply minio-secrets.yaml (two secrets)
+   2. Create and apply minio-statefulset-secrets.yaml
+   3. Check stateful set
+7. Delete kind cluster
+8. Start minikube
+9. Create persistent volume on minikube node my-pv.yaml
+10. Create persistent volume claim my-pvc.yaml
+11. Take our old web-svc and apply persistent volume mounting my-pod.yaml
+12. Start my-pod
+13. Make some checks
+    1. Enter shell in working pod
+    2. Make some data in /app/data create two files
+    3. Remove pod
+    4. Create new pod with same yaml file
+    5. Enter shell in working pod
+    6. List files in /app/data
