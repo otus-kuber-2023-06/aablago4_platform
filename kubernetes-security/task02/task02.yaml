@@ -22,7 +22,7 @@ metadata:
 rules:
   - apiGroups: [""]
     resources:
-      - Pods
+      - pods
     verbs:
       - get
       - list
