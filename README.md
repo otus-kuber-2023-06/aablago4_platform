@@ -1,7 +1,7 @@
 # aablago4_platform
 aablago4 Platform repository
 
-Homework#1 - Kubernetes intro.
+Homework #1 - Kubernetes intro.
 Base Tasks:
 1. Build custom docker image with customizations.
    aablago4/nginx_custom:1.0
@@ -20,7 +20,7 @@ Advanced Tasks:
     - push frontend-pod-healthy.yaml
     - success
 
-Homework#2 - Kubernetes controllers
+Homework #2 - Kubernetes controllers
 1. Create kind cluster with 6 nodes (3 - master, 3 - worker)
 2. Create replicaset with custom frontend application container image from dockerhub.
 3. Create two versions of custom frontend application container image.
@@ -33,7 +33,7 @@ Homework#2 - Kubernetes controllers
 10. *Make some successfull tests with port forwarding
 11. **Add tolerations sections to yaml file to create containers on worker and master nodes.
 
-Homework#3 - Kubernetes Networks
+Homework #3 - Kubernetes Networks
 1. Start minikube
 2. Create web-pod with readinessprobe
 3. Add livenessProbe to web-pod
@@ -63,7 +63,7 @@ Homework#3 - Kubernetes Networks
     4. seq 200 | xargs -Iz curl -s http://ingress.local/web/index.html | grep HOSTNAME
     5. 50% of requests routes to canary pods
 
-Homework#4 - Kubernetes Volumes
+Homework #4 - Kubernetes Volumes
 1. Create kind cluster
 2. Create and apply minio-statefulset.yaml
 3. Create and apply minio-headless-service.yaml
@@ -86,3 +86,18 @@ Homework#4 - Kubernetes Volumes
     4. Create new pod with same yaml file
     5. Enter shell in working pod
     6. List files in /app/data
+
+Homework #5 - Kubernetes Security
+
+1. Task01
+   1. Create service account bob, create cluster role binding for bob
+   2. Create service account dave, no cluster role bindings
+2. Task02
+   1. Create namespace
+   2. Create service account carol in new namespace
+   3. Create cluster role with get, list and watch permissions on Pods
+   4. Create cluster role binding with new service account and new role
+3. Task03
+   1. Create namespace
+   2. Create new service accounts
+   3. Create cluster role bindings for new service accounts
