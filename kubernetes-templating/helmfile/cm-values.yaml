@@ -318,10 +318,10 @@ ingress:
   ## Must be provided if Ingress is enabled
   ##
   hosts:
-    - name: chartmuseum.158.160.63.42.nip.io
+    - name: chartmuseum.158.160.45.146.nip.io
       path: /
       tls: true
-      tlsSecret: chartmuseum.158.160.63.42.nip.io
+      tlsSecret: letsencrypt-production-cert
 
     # - name: chartmuseum.domain2.com
     #   path: /
