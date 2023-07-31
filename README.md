@@ -105,40 +105,40 @@ Homework #6 - Kubernetes templating
 1. Initialize YandexCloud Managed Kubernetes Cluster.
 2. Install helm3
 3. Install ingress-nginx using helm
-   4. helm add repo https://kubernetes.github.io/ingress-nginx
-   5. helm install ingress-nginx ingress-nginx/ingress-nginx --namespace=ingress-nginx --create-namespace
-5. Install certmanager and cluster issuer
-   6. helm add repo https://charts.jetstack.io
-   7. helm install cert-manager jetstack/cert-manager --namespace cert-manager --create-namespace --set installCRDs=true
-   8. kubectl apply -f kubernetes-templating/cert-manager/clusterissuer.yaml
-9. Chartmuseum
-   10. Customize values.yaml with my variables
-   11. helm add repo https://chartmuseum.github.io/charts
-   12. helm install chartmuseum chartmuseum/chartmuseum --namespace=chartmuseum --create-namespace -f kubernetes-templating/chartmuseum/values.yaml
-   13. Make chartmuseum.md readme file with instructions
-       14. kubernetes-templating/chartmuseum/chartmuseum.md
-15. Harbor
-    16. helm repo add harbor https://helm.goharbor.io
-    17. Customize values.yaml
-    18. helm install harbor harbor/harbor --namespace harbor --create-namespace -f kubernetes-templating/harbor/values.yaml
-19. Helmfile
-    20. Create helmfile folder and build project
-        21. Cert-manager + ingress + chartmuseum
-        22. Cert-manager + ingress + harbor
-23. Create own helmchart for hipstershop
-    24. helm create kubernetes-templating/hipster-shop
-    25. Deploy hipstershop application
-    26. Extract frontend deployment and service add ingress rule
-    27. Add variables using values.yaml
-    28. Make new deployment with dependencies in chart.yaml
-29. Helm-secrets
-    30. Some fun with secrets and gpg utility
-31. Kubecfg
-    32. Extract paymentservice and shipping service from yaml
-    33. make template services.jsonnet
-    34. kubecfg update services.jsonnet --namespace hipster-shop
-35. Kustomize
-    36. Extract cartservice from hipster-shop
-    37. make some folders and configs
-    38. kubectl apply -k kubernetes-templating/kustomize/overrides/base
-    39. kubectl apply -k kubernetes-templating/kustomize/overrides/prod
+   1. helm add repo https://kubernetes.github.io/ingress-nginx
+   2. helm install ingress-nginx ingress-nginx/ingress-nginx --namespace=ingress-nginx --create-namespace
+4. Install certmanager and cluster issuer
+   1. helm add repo https://charts.jetstack.io
+   2. helm install cert-manager jetstack/cert-manager --namespace cert-manager --create-namespace --set installCRDs=true
+   3. kubectl apply -f kubernetes-templating/cert-manager/clusterissuer.yaml
+5. Chartmuseum
+   1. Customize values.yaml with my variables
+   2. helm add repo https://chartmuseum.github.io/charts
+   3. helm install chartmuseum chartmuseum/chartmuseum --namespace=chartmuseum --create-namespace -f kubernetes-templating/chartmuseum/values.yaml
+   4. Make chartmuseum.md readme file with instructions
+       1. kubernetes-templating/chartmuseum/chartmuseum.md 
+6. Harbor
+    1. helm repo add harbor https://helm.goharbor.io
+    2. Customize values.yaml
+    3. helm install harbor harbor/harbor --namespace harbor --create-namespace -f kubernetes-templating/harbor/values.yaml
+7. Helmfile
+    1. Create helmfile folder and build project
+        1. Cert-manager + ingress + chartmuseum
+        2. Cert-manager + ingress + harbor
+8. Create own helmchart for hipstershop
+    1. helm create kubernetes-templating/hipster-shop
+    2. Deploy hipstershop application
+    3. Extract frontend deployment and service add ingress rule
+    4. Add variables using values.yaml
+    5. Make new deployment with dependencies in chart.yaml
+9. Helm-secrets
+    1. Some fun with secrets and gpg utility
+10. Kubecfg
+    1. Extract paymentservice and shipping service from yaml
+    2. make template services.jsonnet
+    3. kubecfg update services.jsonnet --namespace hipster-shop
+11. Kustomize
+    1. Extract cartservice from hipster-shop
+    2. make some folders and configs
+    3. kubectl apply -k kubernetes-templating/kustomize/overrides/base
+    4. kubectl apply -k kubernetes-templating/kustomize/overrides/prod
