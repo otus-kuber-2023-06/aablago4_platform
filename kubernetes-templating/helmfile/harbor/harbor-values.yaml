@@ -25,10 +25,10 @@ expose:
       # The name of secret which contains keys named:
       # "tls.crt" - the certificate
       # "tls.key" - the private key
-      secretName: "harbor.158.160.117.75.nip.io"
+      secretName: "harbor.158.160.102.167.nip.io"
   ingress:
     hosts:
-      core: harbor.158.160.117.75.nip.io
+      core: harbor.158.160.102.167.nip.io
     # set to the type of ingress controller if it has specific requirements.
     # leave as `default` for most ingress controllers.
     # set to `gce` if using the GCE ingress controller
@@ -103,7 +103,7 @@ expose:
 # the IP address of k8s node
 #
 # If Harbor is deployed behind the proxy, set it as the URL of proxy
-externalURL: https://harbor.158.160.117.75.nip.io
+externalURL: https://harbor.158.160.102.167.nip.io
 
 # The internal TLS used for harbor components secure communicating. In order to enable https
 # in each component tls cert files need to provided in advance.

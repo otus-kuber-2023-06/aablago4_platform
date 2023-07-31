@@ -321,7 +321,7 @@ ingress:
     - name: chartmuseum.158.160.45.146.nip.io
       path: /
       tls: true
-      tlsSecret: letsencrypt-production-cert
+      tlsSecret: chartmuseum.158.160.45.146.nip.io
 
     # - name: chartmuseum.domain2.com
     #   path: /

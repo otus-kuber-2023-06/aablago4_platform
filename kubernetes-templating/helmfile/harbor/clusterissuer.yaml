@@ -10,7 +10,7 @@ spec:
     email: ab@it-grad.ru
     # Name of a secret used to store the ACME account private key
     privateKeySecretRef:
-      name: letsencrypt-production
+      name: letsencrypt-production-cert
     # Enable the HTTP-01 challenge provider
     solvers:
       - http01:
@@ -31,7 +31,7 @@ spec:
     email: ab@it-grad.ru
     # Name of a secret used to store the ACME account private key
     privateKeySecretRef:
-      name: letsencrypt-staging
+      name: letsencrypt-staging-cert
     # Enable the HTTP-01 challenge provider
     solvers:
       - http01:
