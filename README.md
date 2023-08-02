@@ -88,7 +88,6 @@ Homework #4 - Kubernetes Volumes
     6. List files in /app/data
 
 Homework #5 - Kubernetes Security
-
 1. Task01
    1. Create service account bob, create cluster role binding for bob
    2. Create service account dave, no cluster role bindings
@@ -101,3 +100,45 @@ Homework #5 - Kubernetes Security
    1. Create namespace
    2. Create new service accounts
    3. Create cluster role bindings for new service accounts
+
+Homework #6 - Kubernetes templating
+1. Initialize YandexCloud Managed Kubernetes Cluster.
+2. Install helm3
+3. Install ingress-nginx using helm
+   1. helm add repo https://kubernetes.github.io/ingress-nginx
+   2. helm install ingress-nginx ingress-nginx/ingress-nginx --namespace=ingress-nginx --create-namespace
+4. Install certmanager and cluster issuer
+   1. helm add repo https://charts.jetstack.io
+   2. helm install cert-manager jetstack/cert-manager --namespace cert-manager --create-namespace --set installCRDs=true
+   3. kubectl apply -f kubernetes-templating/cert-manager/clusterissuer.yaml
+5. Chartmuseum
+   1. Customize values.yaml with my variables
+   2. helm add repo https://chartmuseum.github.io/charts
+   3. helm install chartmuseum chartmuseum/chartmuseum --namespace=chartmuseum --create-namespace -f kubernetes-templating/chartmuseum/values.yaml
+   4. Make chartmuseum.md readme file with instructions
+       1. kubernetes-templating/chartmuseum/chartmuseum.md 
+6. Harbor
+    1. helm repo add harbor https://helm.goharbor.io
+    2. Customize values.yaml
+    3. helm install harbor harbor/harbor --namespace harbor --create-namespace -f kubernetes-templating/harbor/values.yaml
+7. Helmfile
+    1. Create helmfile folder and build project
+        1. Cert-manager + ingress + chartmuseum
+        2. Cert-manager + ingress + harbor
+8. Create own helmchart for hipstershop
+    1. helm create kubernetes-templating/hipster-shop
+    2. Deploy hipstershop application
+    3. Extract frontend deployment and service add ingress rule
+    4. Add variables using values.yaml
+    5. Make new deployment with dependencies in chart.yaml
+9. Helm-secrets
+    1. Some fun with secrets and gpg utility
+10. Kubecfg
+    1. Extract paymentservice and shipping service from yaml
+    2. make template services.jsonnet
+    3. kubecfg update services.jsonnet --namespace hipster-shop
+11. Kustomize
+    1. Extract cartservice from hipster-shop
+    2. make some folders and configs
+    3. kubectl apply -k kubernetes-templating/kustomize/overrides/base
+    4. kubectl apply -k kubernetes-templating/kustomize/overrides/prod

@@ -1,0 +1,36 @@
+helmDefaults:
+  wait: true
+  verify: false
+
+repositories:
+  - name: jetstack
+    url: https://charts.jetstack.io
+  - name: ingress-nginx
+    url: https://kubernetes.github.io/ingress-nginx
+  - name: chartmuseum
+    url: https://chartmuseum.github.io/charts
+
+releases:
+  - name: nginx-ingress
+    namespace: nginx-ingress
+    chart: ingress-nginx/ingress-nginx
+  - name: cert-manager
+    namespace: cert-manager
+    chart: jetstack/cert-manager
+    version: 1.12.0
+    set:
+      - name: installCRDs
+        value: true
+    hooks:
+      - events: ["postsync"]
+        showlogs: true
+        command: "kubectl"
+        args:
+          - "apply"
+          - "-f"
+          - "./clusterissuer.yaml"
+  - name: chartmuseum
+    namespace: chartmuseum
+    chart: chartmuseum/chartmuseum
+    values:
+      - cm-values.yaml
