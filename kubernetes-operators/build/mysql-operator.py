@@ -136,6 +136,6 @@ def delete_object_make_backup(body, **kwargs):
     # Удаляем mysql PV:
 
     api = kubernetes.client.CoreV1Api()
-    api.delete_persistent_volume('mysql-instance-pv')
+    api.delete_persistent_volume(f"{name}-pv")
 
     return {'message': "mysql and its children resources deleted"}
