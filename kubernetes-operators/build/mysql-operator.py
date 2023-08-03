@@ -134,7 +134,6 @@ def delete_object_make_backup(body, **kwargs):
     wait_until_job_end(f"backup-{name}-job")
 
     # Удаляем mysql PV:
-
     api = kubernetes.client.CoreV1Api()
     api.delete_persistent_volume(f"{name}-pv")
 

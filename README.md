@@ -142,3 +142,61 @@ Homework #6 - Kubernetes templating
     2. make some folders and configs
     3. kubectl apply -k kubernetes-templating/kustomize/overrides/base
     4. kubectl apply -k kubernetes-templating/kustomize/overrides/prod
+
+Homework #7 - Kubernetes Operators
+1. Install and config minikube on local machine
+2. Remove old deployments, services, replica sets, replication controllers, services
+3. mkdir -p kubernetes-operators/deploy && cd kubernetes-operators
+4. Make deploy/crd.yaml from homework, make some changes
+   1. Edit apiVersion to apiVersion: apiextensions.k8s.io/v1
+   2. Add .spec.versions[0].schema.openAPIV3Schema section
+7. Make deploy/cr.yaml from homework, make some changes
+   8. Remove uslessinfo section
+9. Build own operator
+   1. mkdir build && cd build
+   2. make mysql-operator.py from homework
+   3. Edit function render template
+      1. json_manifest = yaml.safe_load(yaml_manifest)
+   4. Edit @kopf.on.delete section at the end of script
+      13. After deleting jobs we need to delete persistent volume
+      14. api.delete_persistent_volume(f"{name}-pv")
+   5. mkdir templates and download j2 files
+   6. kopf run mysql-operator.py
+   7. Open another console
+   8. kubectl apply -f deploy/cr.yml
+   9. Make sure pv\pvc are created
+      1. kubectl get pvc
+      2. kubectl get pv
+   10. Get mysql-instance pod
+       23. write some data to database
+   11. kubectl delete mysqls.otus.homework mysql-instance
+   12. Wait for backup job to be done
+       26. kubectl get jobs
+   13. kubectl apply -f deploy/cr.yml 
+   14. Wait for restore job yo be done
+       29. kubectl get jobs
+   15. get mysql-instance pod
+       31. read data from console
+   16. kubectl delete mysqls.otus.homework mysql-instance
+   17. Stop running mysql-operator in another console (Ctrl+C)
+   18. Remove jobs, pvcs, pvs, pods
+   17. Make Dockerfile to build custom image
+   18. Upload custom image to hub "aablago4/mysqloperator:v0.1"
+   19. Download some ymls to kubernetes-operator/deploy
+   20. Edit deploy-operator.yml
+       36. .spec.template.spec.containers[0].image to "aablago4/mysqloperator:v0.1"
+   21. Apply manifests kubernetes-operator/deploy
+   22. kubectl apply -f deploy/cr.yml
+   23. Make sure pv\pvc are created
+   1. kubectl get pvc
+   2. kubectl get pv
+   10. Get mysql-instance pod
+       23. write some data to database
+   11. kubectl delete mysqls.otus.homework mysql-instance
+   12. Wait for backup job to be done
+       26. kubectl get jobs
+   13. kubectl apply -f deploy/cr.yml
+   14. Wait for restore job yo be done
+       29. kubectl get jobs
+   15. get mysql-instance pod
+       31. read data from console
