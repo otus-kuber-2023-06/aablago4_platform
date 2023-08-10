@@ -40,7 +40,12 @@ controller:
     http: 80
     https: 443
   # -- Will add custom configuration options to Nginx https://kubernetes.github.io/ingress-nginx/user-guide/nginx-configuration/configmap/
-  config: {}
+  config:
+    log-format-upstream: '{"time": "$time_iso8601", "remote_addr": "$proxy_protocol_addr", "x_forwarded_for": "$proxy_add_x_forwarded_for", "request_id": "$req_id",
+      "remote_user": "$remote_user", "bytes_sent": $bytes_sent, "request_time": $request_time, "status": $status, "vhost": "$host", "request_proto": "$server_protocol",
+      "path": "$uri", "request_query": "$args", "request_length": $request_length, "duration": $request_time,"method": "$request_method", "http_referrer": "$http_referer",
+      "http_user_agent": "$http_user_agent" }'
+    log-format-escape-json: 'true'
   # -- Annotations to be added to the controller config configuration configmap.
   configAnnotations: {}
   # -- Will add custom headers before sending traffic to backends according to https://github.com/kubernetes/ingress-nginx/tree/main/docs/examples/customization/custom-headers
@@ -194,7 +199,11 @@ controller:
   # -- Node tolerations for server scheduling to nodes with taints
   ## Ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/
   ##
-  tolerations: []
+  tolerations:
+    - key: node-role
+      operator: Equal
+      value: infra
+      effect: NoSchedule
   #  - key: "key"
   #    operator: "Equal|Exists"
   #    value: "value"
@@ -263,7 +272,7 @@ controller:
   ## Ref: https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node/
   ##
   nodeSelector:
-    kubernetes.io/os: linux
+    yandex.cloud/node-group-id: catl4mnd482bps81qsus
   ## Liveness and readiness probe values
   ## Ref: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle/#container-probes
   ##
@@ -332,7 +341,7 @@ controller:
   autoscaling:
     enabled: false
     annotations: {}
-    minReplicas: 1
+    minReplicas: 3
     maxReplicas: 11
     targetCPUUtilizationPercentage: 50
     targetMemoryUtilizationPercentage: 50
@@ -655,7 +664,7 @@ controller:
     port: 10254
     portName: metrics
     # if this port is changed, change healthz-port: in extraArgs: accordingly
-    enabled: false
+    enabled: true
     service:
       annotations: {}
       # prometheus.io/scrape: "true"

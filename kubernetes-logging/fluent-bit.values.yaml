@@ -273,9 +273,14 @@ podDisruptionBudget:
   annotations: {}
   maxUnavailable: "30%"
 
-nodeSelector: {}
+nodeSelector:
+  yandex.cloud/node-group-id: catl4mnd482bps81qsus
 
-tolerations: []
+tolerations:
+  - key: node-role
+    operator: Equal
+    value: infra
+    effect: NoSchedule
 
 affinity: {}
 
@@ -365,9 +370,17 @@ config:
   inputs: |
     [INPUT]
         Name tail
-        Path /var/log/containers/*.log
+        Path /var/log/containers/kube-*.log
         multiline.parser docker, cri
         Tag kube.*
+        Mem_Buf_Limit 5MB
+        Skip_Long_Lines On
+    
+    [INPUT]
+        Name tail
+        Path /var/log/containers/ingress-*.log
+        multiline.parser docker, cri
+        Tag ingress.*
         Mem_Buf_Limit 5MB
         Skip_Long_Lines On
 
@@ -386,6 +399,23 @@ config:
         Keep_Log Off
         K8S-Logging.Parser On
         K8S-Logging.Exclude On
+    
+    [FILTER]
+        Name kubernetes
+        Match ingress.*
+        Merge_Log On
+        Keep_Log Off
+        K8S-Logging.Parser On
+        K8S-Logging.Exclude On
+        Merge_Parser        catchall
+    
+    
+    [FILTER]
+        Name modify
+        Match *
+        Remove time
+        Remove @timestamp
+  
 
   ## https://docs.fluentbit.io/manual/pipeline/outputs
   outputs: |
@@ -394,8 +424,12 @@ config:
         Match kube.*
         Host elasticsearch
         Logstash_Format On
+        Logstash_Prefix kube
+        Replace_Dots On
         Retry_Limit False
         Suppress_Type_Name On
+        Trace_Error       On
+        Trace_Output      Off
 
     [OUTPUT]
         Name es
@@ -403,8 +437,23 @@ config:
         Host elasticsearch
         Logstash_Format On
         Logstash_Prefix node
+        Replace_Dots On
         Retry_Limit False
         Suppress_Type_Name On
+        Trace_Error       On
+        Trace_Output      Off
+    
+    [OUTPUT]
+        Name es
+        Match ingress.*
+        Host elasticsearch
+        Logstash_Format On
+        Logstash_Prefix ingress
+        Replace_Dots On
+        Retry_Limit False
+        Suppress_Type_Name On
+        Trace_Error       On
+        Trace_Output      Off
 
   ## https://docs.fluentbit.io/manual/administration/configuring-fluent-bit/classic-mode/upstream-servers
   ## This configuration is deprecated, please use `extraFiles` instead.
@@ -418,6 +467,11 @@ config:
         Time_Keep Off
         Time_Key time
         Time_Format %Y-%m-%dT%H:%M:%S.%L
+    
+    [PARSER]
+      Name    catchall
+      Format  regex
+      Regex   ^(?<message>.*)$
 
   # This allows adding more files with arbitary filenames to /fluent-bit/etc/conf by providing key/value pairs.
   # The key becomes the filename, the value becomes the file content.

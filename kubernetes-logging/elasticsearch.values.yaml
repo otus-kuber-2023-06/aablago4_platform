@@ -590,7 +590,7 @@ master:
   ## ref: https://kubernetes.io/docs/user-guide/node-selection/
   ##
   nodeSelector:
-    yandex.cloud/node-group-id: catdl1lbbs2frmkmvt3c
+    yandex.cloud/node-group-id: catl4mnd482bps81qsus
   ## @param master.tolerations Tolerations for master-elegible pods assignment
   ## ref: https://kubernetes.io/docs/concepts/configuration/taint-and-toleration/
   ##
@@ -905,11 +905,16 @@ data:
   ## @param data.nodeSelector Node labels for data pods assignment
   ## ref: https://kubernetes.io/docs/user-guide/node-selection/
   ##
-  nodeSelector: {}
+  nodeSelector:
+    yandex.cloud/node-group-id: catl4mnd482bps81qsus
   ## @param data.tolerations Tolerations for data pods assignment
   ## ref: https://kubernetes.io/docs/concepts/configuration/taint-and-toleration/
   ##
-  tolerations: []
+  tolerations:
+    - key: node-role
+      operator: Equal
+      value: infra
+      effect: NoSchedule
   ## @param data.priorityClassName data pods' priorityClassName
   ##
   priorityClassName: ""
@@ -1217,11 +1222,16 @@ coordinating:
   ## @param coordinating.nodeSelector Node labels for coordinating-only pods assignment
   ## ref: https://kubernetes.io/docs/user-guide/node-selection/
   ##
-  nodeSelector: {}
+  nodeSelector:
+    yandex.cloud/node-group-id: catl4mnd482bps81qsus
   ## @param coordinating.tolerations Tolerations for coordinating-only pods assignment
   ## ref: https://kubernetes.io/docs/concepts/configuration/taint-and-toleration/
   ##
-  tolerations: []
+  tolerations:
+    - key: node-role
+      operator: Equal
+      value: infra
+      effect: NoSchedule
   ## @param coordinating.priorityClassName coordinating-only pods' priorityClassName
   ##
   priorityClassName: ""
@@ -1498,11 +1508,16 @@ ingest:
   ## @param ingest.nodeSelector Node labels for ingest-only pods assignment
   ## ref: https://kubernetes.io/docs/user-guide/node-selection/
   ##
-  nodeSelector: {}
+  nodeSelector:
+    yandex.cloud/node-group-id: catl4mnd482bps81qsus
   ## @param ingest.tolerations Tolerations for ingest-only pods assignment
   ## ref: https://kubernetes.io/docs/concepts/configuration/taint-and-toleration/
   ##
-  tolerations: []
+  tolerations:
+    - key: node-role
+      operator: Equal
+      value: infra
+      effect: NoSchedule
   ## @param ingest.priorityClassName ingest-only pods' priorityClassName
   ##
   priorityClassName: ""
@@ -1930,11 +1945,16 @@ metrics:
   ## @param metrics.nodeSelector Metrics Node labels for pod assignment
   ## Ref: https://kubernetes.io/docs/user-guide/node-selection/
   ##
-  nodeSelector: {}
+  nodeSelector:
+    yandex.cloud/node-group-id: catl4mnd482bps81qsus
   ## @param metrics.tolerations Metrics Tolerations for pod assignment
   ## Ref: https://kubernetes.io/docs/concepts/configuration/taint-and-toleration/
   ##
-  tolerations: []
+  tolerations:
+    - key: node-role
+      operator: Equal
+      value: infra
+      effect: NoSchedule
   ## @param metrics.topologySpreadConstraints Topology Spread Constraints for pod assignment spread across your cluster among failure-domains. Evaluated as a template
   ## Ref: https://kubernetes.io/docs/concepts/workloads/pods/pod-topology-spread-constraints/#spread-constraints-for-pods
   ##
