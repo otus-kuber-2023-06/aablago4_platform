@@ -200,3 +200,11 @@ Homework #7 - Kubernetes Operators
        1. kubectl get jobs
    31. get mysql-instance pod
        1. read data from console
+
+Homework #8 - Kubernetes service monitoring
+1. Make nginx deployment with default image with 3 replicas
+2. Add configmap for stub page with stats
+3. Add Service with cluster ip for nginx deployment
+3. Add pod with nginx exporter with command to grab data from nginx service
+4. Install Prometheus operator CRDs
+5. Make YAML file with custom service monitor
