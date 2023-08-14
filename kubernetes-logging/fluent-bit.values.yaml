@@ -276,11 +276,7 @@ podDisruptionBudget:
 nodeSelector:
   yandex.cloud/node-group-id: catl4mnd482bps81qsus
 
-tolerations:
-  - key: node-role
-    operator: Equal
-    value: infra
-    effect: NoSchedule
+tolerations: []
 
 affinity: {}
 
@@ -369,20 +365,16 @@ config:
   ## https://docs.fluentbit.io/manual/pipeline/inputs
   inputs: |
     [INPUT]
-        Name tail
-        Path /var/log/containers/kube-*.log
-        multiline.parser docker, cri
-        Tag kube.*
-        Mem_Buf_Limit 5MB
-        Skip_Long_Lines On
-    
+        Name    tail
+        Tag     kube.*
+        Path    /var/log/containers/*.log
+        Parser  docker
+
     [INPUT]
-        Name tail
-        Path /var/log/containers/ingress-*.log
-        multiline.parser docker, cri
-        Tag ingress.*
-        Mem_Buf_Limit 5MB
-        Skip_Long_Lines On
+        Name    tail
+        Tag     ingress.*
+        Path    /var/log/containers/ingress*.log
+        Parser  ingress-custom
 
     [INPUT]
         Name systemd
@@ -393,29 +385,30 @@ config:
   ## https://docs.fluentbit.io/manual/pipeline/filters
   filters: |
     [FILTER]
-        Name kubernetes
-        Match kube.*
-        Merge_Log On
-        Keep_Log Off
-        K8S-Logging.Parser On
-        K8S-Logging.Exclude On
-    
-    [FILTER]
-        Name kubernetes
-        Match ingress.*
-        Merge_Log On
-        Keep_Log Off
-        K8S-Logging.Parser On
-        K8S-Logging.Exclude On
-        Merge_Parser        catchall
-    
-    
-    [FILTER]
         Name modify
         Match *
         Remove time
         Remove @timestamp
-  
+    
+    [FILTER]
+        Name parser
+        Parser docker_no_time
+        Match ingress.*
+        Key_Name     log
+        Reserve_Data On
+        Preserve_Key On
+    
+    [FILTER]
+        Name             kubernetes
+        Match            kube.*
+        Kube_URL         https://kubernetes.default.svc:443
+        Kube_CA_File     /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
+        Kube_Token_File  /var/run/secrets/kubernetes.io/serviceaccount/token
+        Kube_Tag_Prefix  kube.var.log.containers.
+        K8S-Logging.Parser  On
+        K8S-Logging.Exclude On
+        Merge_Log        On
+        Merge_Log_Key    log_processed
 
   ## https://docs.fluentbit.io/manual/pipeline/outputs
   outputs: |
@@ -428,20 +421,8 @@ config:
         Replace_Dots On
         Retry_Limit False
         Suppress_Type_Name On
-        Trace_Error       On
-        Trace_Output      Off
-
-    [OUTPUT]
-        Name es
-        Match host.*
-        Host elasticsearch
-        Logstash_Format On
-        Logstash_Prefix node
-        Replace_Dots On
-        Retry_Limit False
-        Suppress_Type_Name On
-        Trace_Error       On
-        Trace_Output      Off
+        Trace_Error On
+        Trace_Output Off
     
     [OUTPUT]
         Name es
@@ -452,8 +433,19 @@ config:
         Replace_Dots On
         Retry_Limit False
         Suppress_Type_Name On
-        Trace_Error       On
-        Trace_Output      Off
+        Trace_Error On
+        Trace_Output Off
+    
+    [OUTPUT]
+        Name es
+        Match host.*
+        Host elasticsearch
+        Logstash_Format On
+        Logstash_Prefix node
+        Suppress_Type_Name On
+        Trace_Error On
+        Trace_Output Off
+    
 
   ## https://docs.fluentbit.io/manual/administration/configuring-fluent-bit/classic-mode/upstream-servers
   ## This configuration is deprecated, please use `extraFiles` instead.
@@ -469,9 +461,12 @@ config:
         Time_Format %Y-%m-%dT%H:%M:%S.%L
     
     [PARSER]
-      Name    catchall
-      Format  regex
-      Regex   ^(?<message>.*)$
+        Name ingress-custom
+        Format      regex
+        # XXX: modified from upstream: s/message/log/
+        Regex       ^(?<time>[^ ]+) (?<stream>stdout|stderr) (?<logtag>[^ ]*) (?<log>.*)$
+        Time_Key    time
+        Time_Format %Y-%m-%dT%H:%M:%S.%L%z
 
   # This allows adding more files with arbitary filenames to /fluent-bit/etc/conf by providing key/value pairs.
   # The key becomes the filename, the value becomes the file content.
