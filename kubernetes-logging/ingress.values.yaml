@@ -196,11 +196,11 @@ controller:
   # -- Node tolerations for server scheduling to nodes with taints
   ## Ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/
   ##
-  tolerations:
-    - key: node-role
-      operator: Equal
-      value: infra
-      effect: NoSchedule
+  tolerations: []
+  #  - key: node-role
+  #    operator: Equal
+  #    value: infra
+  #    effect: NoSchedule
   #  - key: "key"
   #    operator: "Equal|Exists"
   #    value: "value"
@@ -268,8 +268,8 @@ controller:
   # -- Node labels for controller pod assignment
   ## Ref: https://kubernetes.io/docs/concepts/scheduling-eviction/assign-pod-node/
   ##
-  nodeSelector:
-    yandex.cloud/node-group-id: catl4mnd482bps81qsus
+  nodeSelector: {}
+  #  yandex.cloud/node-group-id: catl4mnd482bps81qsus
   ## Liveness and readiness probe values
   ## Ref: https://kubernetes.io/docs/concepts/workloads/pods/pod-lifecycle/#container-probes
   ##

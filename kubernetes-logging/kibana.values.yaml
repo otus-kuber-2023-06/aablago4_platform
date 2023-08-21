@@ -17,7 +17,7 @@ global:
   ##   - myRegistryKeySecretName
   ##
   imagePullSecrets: []
-  storageClass: ""
+  storageClass: "local-volume"
 
 ## @section Common parameters
 
@@ -41,7 +41,7 @@ commonLabels: {}
 extraDeploy: []
 ## @param clusterDomain Kubernetes cluster domain name
 ##
-clusterDomain: cluster.local
+clusterDomain: kubercluster.local
 
 ## Enable diagnostic mode in the deployment(s)/statefulset(s)
 ##
@@ -90,7 +90,7 @@ image:
   pullSecrets: []
   ## Enable debug mode
   ##
-  debug: false
+  debug: true
 ## @param replicaCount Number of replicas of the Kibana Pod
 ##
 replicaCount: 1
@@ -226,7 +226,7 @@ persistence:
   ##   set, choosing the default provisioner.  (gp2 on AWS, standard on
   ##   GKE, AWS & OpenStack)
   ##
-  storageClass: ""
+  storageClass: "local-volume"
   ## @param persistence.existingClaim Provide an existing `PersistentVolumeClaim`
   ##
   existingClaim: ""
@@ -398,7 +398,7 @@ ingress:
   apiVersion: ""
   ## @param ingress.hostname Default host for the ingress resource. If specified as "*" no host rule is configured
   ##
-  hostname: kibana.158.160.51.79.nip.io
+  hostname: kibana.91.185.84.63.nip.io
   ## @param ingress.path The Path to Kibana. You may need to set this to '/*' in order to use this with ALB ingress controllers.
   ##
   path: /
@@ -729,7 +729,7 @@ elasticsearch:
       ## @param elasticsearch.security.tls.verificationMode Verification mode for SSL communications.
       ## Supported values: full, certificate, none.
       ## Ref: https://www.elastic.co/guide/en/kibana/7.x/settings.html#elasticsearch-ssl-verificationmode
-      verificationMode: "full"
+      verificationMode: "none"
       ## @param elasticsearch.security.tls.existingSecret Name of the existing secret containing Elasticsearch Truststore or CA certificate. Required unless verificationMode=none
       ##
       existingSecret: ""

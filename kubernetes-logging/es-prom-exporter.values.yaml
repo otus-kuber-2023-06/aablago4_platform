@@ -234,7 +234,7 @@ serviceMonitor:
   ## https://github.com/coreos/prometheus-operator
   ##
   enabled: true
-  namespace: observability
+  namespace: ""
   labels: {}
   interval: 10s
   jobLabel: ""

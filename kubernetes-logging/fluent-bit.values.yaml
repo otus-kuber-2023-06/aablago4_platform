@@ -273,10 +273,19 @@ podDisruptionBudget:
   annotations: {}
   maxUnavailable: "30%"
 
-nodeSelector:
-  yandex.cloud/node-group-id: catl4mnd482bps81qsus
+nodeSelector: {}
+##  yandex.cloud/node-group-id: catl4mnd482bps81qsus
 
-tolerations: []
+tolerations:
+  - key: node-role.kubernetes.io/control-plane
+    operator: Exists
+    effect: NoSchedule
+  - key: node-role.kubernetes.io/master
+    operator: Exists
+    effect: NoSchedule
+  - key: node-role.kubernetes.io/node
+    operator: Exists
+    effect: NoSchedule
 
 affinity: {}
 
@@ -366,9 +375,22 @@ config:
   inputs: |
     [INPUT]
         Name    tail
-        Tag     kube.*
+        Tag     node.*
         Path    /var/log/containers/*.log
         Parser  docker
+    
+    [INPUT]
+        Name    tail
+        Tag     apilog.*
+        Path    /var/log/kubernetes/audit/*.log
+        Parser  docker
+
+    [INPUT]
+        Name         tail
+        Tag          syslog.*
+        Path         /var/log/syslog*
+        Exclude_Path *.gz
+        Parser       docker
 
     [INPUT]
         Name    tail
@@ -378,29 +400,31 @@ config:
 
     [INPUT]
         Name systemd
-        Tag host.*
+        Tag service.*
         Systemd_Filter _SYSTEMD_UNIT=kubelet.service
         Read_From_Tail On
 
   ## https://docs.fluentbit.io/manual/pipeline/filters
-  filters: |
-    [FILTER]
-        Name modify
-        Match *
-        Remove time
-        Remove @timestamp
-    
+  filters: |    
     [FILTER]
         Name parser
         Parser docker_no_time
         Match ingress.*
         Key_Name     log
         Reserve_Data On
+        Preserve_Key On   
+    
+    [FILTER]
+        Name parser
+        Parser docker
+        Match syslog.*
+        Key_Name     log
+        Reserve_Data On
         Preserve_Key On
     
     [FILTER]
         Name             kubernetes
-        Match            kube.*
+        Match            node.*
         Kube_URL         https://kubernetes.default.svc:443
         Kube_CA_File     /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
         Kube_Token_File  /var/run/secrets/kubernetes.io/serviceaccount/token
@@ -414,10 +438,10 @@ config:
   outputs: |
     [OUTPUT]
         Name es
-        Match kube.*
+        Match node.*
         Host elasticsearch
         Logstash_Format On
-        Logstash_Prefix kube
+        Logstash_Prefix node
         Replace_Dots On
         Retry_Limit False
         Suppress_Type_Name On
@@ -438,14 +462,34 @@ config:
     
     [OUTPUT]
         Name es
-        Match host.*
+        Match service.*
         Host elasticsearch
         Logstash_Format On
-        Logstash_Prefix node
+        Logstash_Prefix service
         Suppress_Type_Name On
         Trace_Error On
         Trace_Output Off
     
+    [OUTPUT]
+        Name es
+        Match syslog.*
+        Host elasticsearch
+        Logstash_Format On
+        Logstash_Prefix syslog
+        Suppress_Type_Name On
+        Trace_Error On
+        Trace_Output Off
+    
+    [OUTPUT]
+        Name es
+        Match apilog.*
+        Host elasticsearch
+        Logstash_Format On
+        Logstash_Prefix apilog
+        Suppress_Type_Name On
+        Trace_Error On
+        Trace_Output Off
+  
 
   ## https://docs.fluentbit.io/manual/administration/configuring-fluent-bit/classic-mode/upstream-servers
   ## This configuration is deprecated, please use `extraFiles` instead.
@@ -458,7 +502,7 @@ config:
         Format json
         Time_Keep Off
         Time_Key time
-        Time_Format %Y-%m-%dT%H:%M:%S.%L
+        Time_Format %Y-%m-%dT%H:%M:%S.%L%z
     
     [PARSER]
         Name ingress-custom
