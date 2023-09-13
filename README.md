@@ -208,3 +208,34 @@ Homework #8 - Kubernetes service monitoring
 3. Add pod with nginx exporter with command to grab data from nginx service
 4. Install Prometheus operator CRDs
 5. Make YAML file with custom service monitor
+
+Homework #9 - Kubernetes Logging
+1. Prepare YC.
+   1. Make two node pools
+   2. Set label for nodes from second pool
+2. Install hipstershop application
+3. Install kubernetes cluster using kubespray
+   1. One master node, three worker nodes
+   2. Edit kube-api manifest for audit logging
+4. Install elasticsearch from bitnami repo, make custom values
+   1. Edit nodeselector, ingress sections, add prometheus exporter
+5. Install ingress-nginx from ingress repo, make some custom values
+   1. Edit nodeselector, ingress sections
+   2. Set custom logging json format
+   3. Configure mterics output for each ingress controller pod
+   4. Configure custom service for metrics
+6. Install kibana from kibana repo, make some custom values
+    1. Edit nodeselector, ingress sections
+7. Install fluent-bit from fluentbit repo, make some custom values
+   1. Edit nodeselector, input, filter, output, parser sections
+8. Make some index patterns for inputs
+   1. node for all container logs in /var/log/containers/*.log 
+   2. syslog for all logs in /var/log/syslog*
+   3. ingress for all logs in /var/log/containers/ingress*.log
+   4. apilog for audit logs in /var/log/kubernetes/audit/*.log
+9. Add some kibana dashboards for ingress-nginx
+10. Install kube-prom-stack, edit ingress options for external access
+11. Add custom service monitor for elasticsearch prometheus exporter
+12. Add custom service monitor for ingress nginx prometheus exporter
+13. Add elasticsearch and ingress nginx controller metrics dashboards for kibana
+14. Install Loki
