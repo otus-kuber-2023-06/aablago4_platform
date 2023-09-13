@@ -239,3 +239,59 @@ Homework #9 - Kubernetes Logging
 12. Add custom service monitor for ingress nginx prometheus exporter
 13. Add elasticsearch and ingress nginx controller metrics dashboards for kibana
 14. Install Loki
+
+Homework #10 - Kubernetes Gitops
+1. GitLab
+   1. Register account
+   2. Register ssh key to use VCS \ IDE
+   3. Clone microservices-demo repo and upload it to new gitlab project
+   4. Create helm charts for all services
+2. Terraform prepared Managed K8s@YC
+   1. Clone main terraform playbook
+      1. Managed K8S cluster
+      2. Provider settings
+      3. Provider mirror settings
+   2. Edit playbooks with my values
+   3. Prepare terraform provider mirror with files
+   4. Prepare gitlab runner with docker runner
+   5. Deploy Managed K8S cluster
+3. Building microservices images
+   1. Prepare gitlab-ci file for build images
+   2. Enter variables to connect with dockerhub
+   3. New images will be builded and uploaded to dockerhub with commit tag tag if it does not exists we use commit short sha
+   4. Prepare gitlab runner sith shell execution
+   5. Deploy new versions of microservices
+4. GitOps
+   1. Install flux using helm chart with crds
+   2. Using fluxctl make initial config for flux using GitLab PAT
+      1. Make ./cluster our home directory for manifests
+   3. Make namespace.yaml file in ./cluster/deploy/manifests. Watch flux making new namespace
+   4. Make ./cluster/deploy/releases directory
+   5. Make release for frontend (chart chart: ./deploy/charts/frontend)
+   6. Make releases for all other microservices
+   7. Image updates
+      1. For all microservices make ImageRepository (image.toolkit.fluxcd.io/v1beta2) and ImagePolicy (image.toolkit.fluxcd.io/v1beta2) for flux to scan for new images. Artifacts stored in ./cluster/deploy/manifests they will be auto applied by flux
+      2. Make ImageUpdateAutomation (image.toolkit.fluxcd.io/v1beta1)
+      3. Edit GitRepository (source.toolkit.fluxcd.io/v1) to connect with GitLab Using ssh key neither PAT
+         1. Generate ssh keys
+         2. Upload keys to gitlab
+         3. generate k8s secrets
+         4. edit GitRepository to use secrets with ssh keys
+      4. Edit Helm releases with marking for image update automation
+         1. As an example # {"$imagepolicy": "microservices-demo:adservice:tag"}
+      5. Update docker images in hub. Watch flux updates images and commits new revisions of docker images
+5. Flagger \ Istio
+   1. Download Istioctl
+   2. Initialize istio with default profile
+   3. Install prometheus plugin for istio
+   4. Install Flagger using helm chart
+   5. Edit namespace annotations to istio injections
+   6. Remove all pods of microservices, watch them appears with istio-proxy sidecars
+   7. Make VirtualService (networking.istio.io/v1alpha3) and Gateway (networking.istio.io/v1alpha3) store them in helm chart templates
+   8. Make Canary (flagger.app/v1beta1) store it with helm chart templates
+   9. Edit loadgenerator chart
+      1. .spec.template.spec.containers[main].env.name[FRONTEND_ADDR].value: "istio-ingressgateway.istio-system.svc.cluster.local:80"
+   10. Update frontend image
+   11. Watch flux tries to update frontend image
+   12. Watch canary tries to analyze new revision of image
+   13. Profit
