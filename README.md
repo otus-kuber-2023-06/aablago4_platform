@@ -295,3 +295,22 @@ Homework #10 - Kubernetes Gitops
    11. Watch flux tries to update frontend image
    12. Watch canary tries to analyze new revision of image
    13. Profit
+6. Infra repo using helmfile
+   1. Remove all components and crds
+   2. Install all infra components using helm
+   3. Uninstall all infra components
+   4. Compose all charts in one helmfile
+   5. Artifacts are stored in kubernetes-gitops/infra-repo/helmfile
+7. ArgoCD
+   1. Uninstall all components
+   2. Edit helmfile release (delete flux and values)
+   3. Install istio and flagger using helmfile
+   4. Install ArgoCD using manifest
+   5. Initial install using argocli
+   6. Init new repo in GitLab
+   7. Prepare manifests for microservices-demo application
+   8. Create new application in ArgoCD using new GitLab repo
+   9. Sync apllication
+   10. Add new folder with istio gateways and virtual services
+   11. Sync application
+   12. Artifacts are stored in kubernetes-gitops/argo-cd
