@@ -303,8 +303,8 @@ Create serviceaccount
 Create role with kms.keys.encrypterDecrypter privileges
 Grant role to serviceaccount
 Config YC CLI
-Create new key for serviceaccount, config YC CLI to use account key.
-YC CLI create token
+Create new key for serviceaccount
+Download key as json.
 
 Remove helm release
 Edit helm values:
@@ -312,21 +312,28 @@ vault docker image - cr.yandex/yc/vault, version - latest
 Edit config to use custom seal
 seal "yandexcloudkms" {
     kms_key_id  = "abj81mjrombfjdl8asml"
-    oauth_token = ""
+    service_account_key_file = "/vault/sa-config/sakey.json"
 }
 
 Make new helm release
+make configmap with service account key and apply it ./artifacts/configmap.yaml
+edit stateful set to mount configmap as file ./artifatcs/statefulset-patch.yaml
+remove all vault pods
+
 init first node:
 / $ vault operator init
-Recovery Key 1: G+lQK+uiFgmsgvPPFxXuRYczOFdGz7oEoR3w558QVzhc
-Recovery Key 2: zHK9KrNAXqLPvxp9mUinwvavA8eT1U51/vI7q2YHO1U8
-Recovery Key 3: GAyAAyyaaf9Nu7Znkd01DribEUMt8/gQ1aYxj6/TnyK0
-Recovery Key 4: JGZC5TBAzoUGC6r/gbff6Lm7JES5CDG+oIHNBNoEMaUL
-Recovery Key 5: NEQnKWnrmkpqjMNdJiKB391d7GLV7akqDQ/f46pL7aNJ
+Recovery Key 1: 591gr0mqnZcllmK8zRGEYhwzUPhuCRgnGkddXOFxpfpJ
+Recovery Key 2: t3u8aed1lNycREWVXnmLABd5Zs0Mq4JUnCu4naxCRJvQ
+Recovery Key 3: Sd7Xb7gJEBXcE+wy795JTJD0FGmlZoywGr1/9rxZdrWK
+Recovery Key 4: /an9NFftHMxyVJsmsp6DquYoth/RB/GkdXhFMTQDrBlx
+Recovery Key 5: 0VxJfcKrLIqy0OB4PD8iVwRT1q7IAS217kCEl4dz5MOj
 
-Initial Root Token: hvs.cf9QeVn9U0yP6kdJ0FQUklUd
+Initial Root Token: hvs.LSt4ytqlxL0cRbVsGahxLvvG
 
 Success! Vault is initialized
+
+Recovery key initialized with 5 key shares and a key threshold of 3. Please
+securely distribute the key shares printed above.
 
 add other nodes to cluster
 vault operator raft join http://vault-0.vault-internal:8200
