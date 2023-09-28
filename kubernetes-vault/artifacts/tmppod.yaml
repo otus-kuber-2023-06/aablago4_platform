@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: tmppod
+spec:
+  serviceAccountName: vault-auth
+  containers:
+    - name: alpine
+      image: alpine:3.7
+      command:
+        - /bin/sh
+        - '-ec'
+      args:
+        - 'ping localhost'
